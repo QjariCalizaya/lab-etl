@@ -1,0 +1,1 @@
+{"_invocation_id": "d87d3722-e359-4377-a12d-cc3b37a553d3", "linked": {"0": {"name": "source.my_shop.raw.sales", "type": "source", "succ": [1]}, "1": {"name": "model.my_shop.sales_stg", "type": "model", "succ": [2]}, "2": {"name": "model.my_shop.customer_sales", "type": "model"}}}

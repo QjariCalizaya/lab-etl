@@ -1,0 +1,20 @@
+﻿name: 'my_shop'
+version: '1.0'
+config-version: 2
+
+profile: 'my_shop'
+
+model-paths: ["models"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+
+models:
+  my_shop:
+    staging:
+      +schema: analytics
+      +materialized: view
+    marts:
+      +schema: analytics
+      +materialized: table

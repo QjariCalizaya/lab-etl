@@ -1,4 +1,5 @@
-﻿version: '3.8'
+version: '3.8'
+
 services:
   postgres:
     image: postgres:13
@@ -9,8 +10,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - postgres_data:/var/lib/postgresql/data
       - ./data:/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U airflow"]
       interval: 5s
@@ -25,11 +27,15 @@ services:
         condition: service_healthy
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
     volumes:
       - ./dags:/opt/airflow/dags
       - ./dbt_project:/opt/dbt
+      - ./data:/opt/airflow/data
     ports:
-      - "8080:8080"
-    command: bash -c "airflow db init && airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com && airflow webserver & airflow scheduler"
+      - "8081:8080"
+    command: bash -c "airflow db init && airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true && airflow webserver --port 8080 & airflow scheduler"
+
+volumes:
+  postgres_data:
